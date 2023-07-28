@@ -2,6 +2,7 @@ import 'package:arcore_flutter_plugin_example/screens/augmented_faces.dart';
 import 'package:arcore_flutter_plugin_example/screens/augmented_images.dart';
 import 'package:arcore_flutter_plugin_example/screens/image_object.dart';
 import 'package:arcore_flutter_plugin_example/screens/matri_3d.dart';
+import 'package:arcore_flutter_plugin_example/screens/measurement_screen.dart';
 import 'package:arcore_flutter_plugin_example/screens/multiple_augmented_images.dart';
 import 'package:flutter/material.dart';
 import 'screens/hello_world.dart';
@@ -104,6 +105,13 @@ class HomeScreen extends StatelessWidget {
                   builder: (context) => AugmentedFacesScreen()));
             },
             title: Text("Augmented Faces"),
+          ),
+          ListTile(
+            onTap: () {
+              Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) => MeasurementScreen()));
+            },
+            title: Text("Measurement"),
           ),
         ],
       ),

@@ -53,6 +53,7 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
     private val RC_PERMISSIONS = 0x123
     private var sceneUpdateListener: Scene.OnUpdateListener
     private var faceSceneUpdateListener: Scene.OnUpdateListener
+    private var forceTapOnScreenCenter: Boolean = false
 
     //AUGMENTEDFACE
     private var faceRegionsRenderable: ModelRenderable? = null
@@ -171,7 +172,8 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         when (call.method) {
             "init" -> {
-                arScenViewInit(call, result, activity)
+                // arScenViewInit(call, result, activity)
+                arSceneViewInit(call, result, activity)
             }
             "addArCoreNode" -> {
                 debugLog(" addArCoreNode")
@@ -300,7 +302,13 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
         val frame = arSceneView?.arFrame
         if (frame != null) {
             if (tap != null && frame.camera.trackingState == TrackingState.TRACKING) {
-                val hitList = frame.hitTest(tap)
+               Log.i(TAG, " forceTapOnScreenCenter: " + forceTapOnScreenCenter)
+                val hitList: List<HitResult>
+                if(forceTapOnScreenCenter){
+                    hitList = frame.hitTest(arSceneView!!.width / 2f, arSceneView!!.height / 2f)
+                }else{
+                    hitList = frame.hitTest(tap)
+                }
                 val list = ArrayList<HashMap<String, Any>>()
                 for (hit in hitList) {
                     val trackable = hit.trackable
@@ -372,8 +380,8 @@ class ArCoreView(val activity: Activity, context: Context, messenger: BinaryMess
         return mPath as String
     }
 
-    private fun arScenViewInit(call: MethodCall, result: MethodChannel.Result, context: Context) {
-        debugLog("arScenViewInit")
+    private fun arSceneViewInit(call: MethodCall, result: MethodChannel.Result, context: Context) {
+        debugLog("arSceneViewInit")
         val enableTapRecognizer: Boolean? = call.argument("enableTapRecognizer")
         if (enableTapRecognizer != null && enableTapRecognizer) {
             arSceneView
